@@ -26,6 +26,7 @@ import javax.json.stream.JsonParser;
 import javax.json.stream.JsonParser.Event;
 
 import static com.efiia.discoveryreport.DiscoveryReportDBLoader.DEBUG;
+import static com.efiia.discoveryreport.data.UserData.SERVICEPREFIX;
 
 /**
  *
@@ -34,6 +35,8 @@ import static com.efiia.discoveryreport.DiscoveryReportDBLoader.DEBUG;
 public abstract class APIProcessor {
 
 	private final static boolean DEBUG = DiscoveryReportDBLoader.DEBUG;
+
+	private final static int TIMEOUTSECS = 180;
 
 	// request
 	private final HashMap<String, String> Headers;
@@ -73,6 +76,14 @@ public abstract class APIProcessor {
 	}
 
 	public void setAsUser( String pUID ) {
+
+		// if the User is a Service, don't setUser
+		// check added April 2016
+		if ( pUID == null || pUID.startsWith( SERVICEPREFIX ) ) {		// rely on Java short-circut evaluation for null
+			asUserID = null;
+			return;
+		}
+
 		asUserID = pUID;
 	}
 
@@ -123,6 +134,10 @@ public abstract class APIProcessor {
 
 			xConnect.setRequestProperty( "Accept", "application/json" );
 
+			// added 22-March-2016
+			xConnect.setConnectTimeout( TIMEOUTSECS * 1000 );
+			xConnect.setReadTimeout( TIMEOUTSECS *100 );
+
 			String AuthHeader = getAuthHeader();
 			if ( AuthHeader != null )
 				xConnect.setRequestProperty( "Authorization", AuthHeader );
@@ -166,9 +181,14 @@ public abstract class APIProcessor {
 				try ( BufferedReader br = new BufferedReader( new InputStreamReader( xConnect.getInputStream() )) ) {
 					ProcessResponse( br );
 					retval = true;
+// Redundant
+//				} catch ( DRException dex ) {
+//					throw ( dex );
 
-				} catch ( DRException dex ) {
-					throw ( dex );
+				} catch ( IOException iox ) {
+					Logger.getLogger(APIProcessor.class.getName() ).log( Level.SEVERE, String.format( "IOException Calling URL:%s", xEP ), iox );
+					throw new DRException( 1114, "APIProcessor: ProcessResponse", iox );
+
 				} catch ( Exception ex ) {
 					Logger.getLogger(APIProcessor.class.getName() ).log( Level.SEVERE, null, ex );
 					throw new DRException( 1111, "APIProcessor: ProcessResponse", ex );
@@ -197,18 +217,25 @@ public abstract class APIProcessor {
 					}
 					ProcessErrorResponse( xURL, br );
 					ErrorData.put( "url", xConnect.getURL().toString() );
+					/* this bit added March 2016
+					 * fails and causes system stop for some reason
+					 * and does not report full error data
+					 */
+					/*
 					throw new DRException( 1113, "APIProcessor:ProcessResponse", String.format(  "Server Returned: %d", status ), ErrorData.get( "error_description" ) );
 				} catch ( DRException dex ) {
 					throw ( dex );
-					
+					 */
+					/* end of bit added March 2016 */
+
 				} catch ( Exception ex ) {
 					Logger.getLogger(APIProcessor.class.getName() ).log( Level.SEVERE, null, ex );
 				}
 
 			}
-
-		} catch ( DRException dx ) {
-			throw ( dx );
+// Redundant
+//		} catch ( DRException dx ) {
+//			throw ( dx );
 
 		} catch ( MalformedURLException x1 ) {
 			System.out.println( x1.toString() );

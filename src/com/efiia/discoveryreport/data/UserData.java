@@ -17,6 +17,8 @@ import java.util.HashMap;
  */
 public class UserData /* implements DataObject */ {
 
+	public final static String SERVICEPREFIX = "BxSvc";
+
 	int UserID;
 	String Type;
 	String BoxUserID;
@@ -44,6 +46,13 @@ public class UserData /* implements DataObject */ {
 		Name = (String)pJSONData.get( "name" );
 		Login = (String)pJSONData.get( "login" );
 		BoxUserID = (String)pJSONData.get(  "id" );
+	}
+
+	// new constructor to allow for services - April 2016
+	public UserData( String pName, String pLogin, String pID ) {
+		Name = pName;
+		Login = pLogin;
+		BoxUserID = pID;
 	}
 
 	@Override

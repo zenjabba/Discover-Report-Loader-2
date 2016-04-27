@@ -77,9 +77,20 @@ public class EventData {
 				BoxParentID = (String)Parent.get( "id" );
 
 		}
+		
 		// BoxItemVersionID is in "additional_details
+		// 27 Apr 2016 - LEN
+		// new code to safeguard around extra stuff in additional_details
+		// Old: BoxItemVersionID = ( xAD != null ? (String)xAD.get( "version_id" ) : "0" );
+		String BoxVID = "0";
 		HashMap<String,Object> xAD = (HashMap<String,Object>)pJSONData.get( "additional_details" );
-		BoxItemVersionID = ( xAD != null ? (String)xAD.get( "version_id" ) : "0" );
+		if ( xAD != null ) {
+			String x = (String)xAD.get( "version_id" );
+			if ( x != null )
+				BoxVID = x;
+		}
+		BoxItemVersionID = BoxVID;
+
 	}
 
 	// for subevents like when we copy a folder

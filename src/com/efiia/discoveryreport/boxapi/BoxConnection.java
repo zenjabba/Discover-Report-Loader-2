@@ -187,6 +187,14 @@ public class BoxConnection {
 	 * @return
 	 */
 	public String getAsUser( String pBoxUserID ) {
+
+		// April 2016 - kludge for missing BoxUserID
+		if ( pBoxUserID == null ) {
+			if ( DEBUG )
+				System.out.printf( "BoxUserID null, quick exit" );
+			return ( null );
+		}
+
 		// kludge for admin as user errors
 		// if ( true && pBoxUserID.equals( "227572005" ))
 		// 	return ( "234652714" );
@@ -205,10 +213,9 @@ public class BoxConnection {
 		rtp.setInfo( BoxRefreshToken, BoxClientID, BoxClientSecret );
 		if ( !rtp.FetchData() ) {
 			// error refreshing token - most likely out of sync
-			if ( DEBUG ) {
+			if ( DEBUG )
 				System.out.println( rtp.getErrorData().toString() );
-				throw new DRException( INVALIDREFRESHTOKEN, "BoxConnection:RefreshToken", rtp.ErrorData.get("error_description") );
-			}
+			throw new DRException( INVALIDREFRESHTOKEN, "BoxConnection:RefreshToken", rtp.ErrorData.get("error_description") );
 		}
 
 		// update current connection information

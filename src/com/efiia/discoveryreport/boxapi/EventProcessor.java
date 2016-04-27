@@ -200,6 +200,11 @@ public class EventProcessor extends APIProcessor {
 		System.out.printf("      Total: %,8d%n", TotalEventCtr );
 		if ( ErrorCtr > 0 )
 			System.out.printf("     Errors: %,8d%n", TotalEventCtr );
+
+		// ToDo! new add here
+		// first event date processed
+		// last event date processed
+
 		System.out.println();
 		System.out.println( "Database Stats:" );
 		System.out.printf( "    New Events: %,4d%n", eventsNew );

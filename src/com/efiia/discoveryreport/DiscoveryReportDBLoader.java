@@ -30,7 +30,12 @@ public class DiscoveryReportDBLoader {
 			// "1.2 (Dev)";
 			// "1.3 (10-Apr-2015)";
 			// "1.4 (16-Apr-2015)";		// add fix for copy events
-			"2.0 (3-Mar-2016)";			// added process check on startup
+			// "2.0 (3-Mar-2016)";			// added process check on startup
+			//"2.0.1 (20-Mar-2016)";		// back out Box Error Response (APIProcessor) Exception 1113
+			//"2.0.2 (22-Mar-2016)";		// add connection and read timeout for http
+			// "2.0.3 (??-Mar-2016)";		// add connection and read timeout for http
+			// "2.0.4 (20-Apr-2016)";		// kludge for Retention Manager service
+			"2.0.5 (27-Apr-2016)";		// clean-up logic for Version ID confusing folder data
 
 	/**
 	 * @param args the command line arguments
