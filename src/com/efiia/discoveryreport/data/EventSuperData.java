@@ -33,6 +33,9 @@ public class EventSuperData {
 		String xLogin = (String)xJSONData.get( "login" );
 		String xBoxUserID = (String)xJSONData.get(  "id" );
 
+		/* per Box teleconference - no longer required - needs testing
+		 * 2016-Jul-9
+		 */
 		if ( xBoxUserID == null ) {
 			/* might be a service, check additional_info
 			 *
